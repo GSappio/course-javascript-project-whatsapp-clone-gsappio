@@ -252,6 +252,17 @@ export class WhatsAppController {
 
             console.log(this.el.pictureCamera.src);
 
+
+            this.el.panelCamera.removeClass('open');
+            this.el.panelMessagesContainer.show();
+            this._camera.stop();
+
+        });
+
+        this.el.btnTakePicture.on('click', e => {
+
+            console.log('take picture');
+
         });
 
 
