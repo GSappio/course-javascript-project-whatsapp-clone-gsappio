@@ -1,3 +1,5 @@
+const pdfjsLib = require('pdfjs-dist');
+
 export class DocumentPreviewController {
 
    constructor(file){
