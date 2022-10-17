@@ -14,6 +14,8 @@ export class MicrophoneController {
             
             audio.play();
 
+            this.trigger('play', audio);
+
         }).catch(err => {
             console.error(err);
         }); 
