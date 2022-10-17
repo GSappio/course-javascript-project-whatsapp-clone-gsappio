@@ -2,20 +2,7 @@ export class ClassEvent {
 
     constructor(){
 
-        this._events = {
-            play: [
-                ()=>{
-
-                    console.log('A');
-    
-                }, 
-                ()=>{
-
-                    console.log('B');
-    
-                }
-            ]
-        };
+        this._events = {};
 
     }
 

@@ -21,7 +21,6 @@ export class CameraController {
             track.stop();
         });
 
-
     }
 
     takePicture(mimeType = 'image/png'){
