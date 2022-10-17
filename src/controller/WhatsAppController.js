@@ -379,9 +379,10 @@ export class WhatsAppController {
 
             this._microphoneController = new MicrophoneController();
 
-            this._microphoneController.on('play', ()=>{
+            this._microphoneController.on('play', musica=>{
 
-                
+                console.log('recebi o evento play', musica);
+
             });
 
         });
