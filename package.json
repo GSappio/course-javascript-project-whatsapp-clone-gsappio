@@ -1,7 +1,7 @@
 {
   "name": "course-javascript-project-whatsapp-clone-gsappio",
   "version": "1.0.0",
-  "description": "",
+  "description": "Using javascript for the main functions of a whatsapp clone project.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,5 +16,14 @@
     "pdfjs-dist": "^2.0.489",
     "webpack": "^3.1.0",
     "webpack-dev-server": "^2.5.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GSappio/course-javascript-project-whatsapp-clone-gsappio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GSappio/course-javascript-project-whatsapp-clone-gsappio/issues"
+  },
+  "homepage": "https://github.com/GSappio/course-javascript-project-whatsapp-clone-gsappio#readme"
 }
