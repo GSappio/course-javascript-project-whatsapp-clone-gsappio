@@ -24,6 +24,20 @@
 
             return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
+    }
+
+    static dateToTime(date, locale = 'pt-BR'){
+
+        return date.toLocaleTimeString(this._locale, {
+            hours: '2-digit',
+            minutes: '2-digit'
+        });
+
+    }
+
+    static timeStampToTime(timeStamp){
+
+        return (timeStamp && typeof timeStamp.toDate === 'function') ? Format.dateToTime(timeStamp.toDate()) : '';
 
     }
 
