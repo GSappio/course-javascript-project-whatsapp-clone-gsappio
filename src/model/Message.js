@@ -1,6 +1,6 @@
 import { Model } from "./Model";
 import { Firebase } from "../util/FireBase";
-import { Format } from "../util/Format";
+import { Format } from "../util/Format"
 
 export class Message extends Model {
 
@@ -21,7 +21,25 @@ export class Message extends Model {
     set timeStamp(value) { return this._data.timeStamp = value; }
 
     get status() { return this._data.status; }
+    set status(value) { return this._data.status = value; }
 
+    get preview() { return this._data.preview; }
+    set preview(value) { return this._data.preview = value; }
+
+    get info() { return this._data.info; }
+    set info(value) { return this._data.info = value; }
+
+    get fileType() { return this._data.fileType; }
+    set fileType(value) { return this._data.fileType = value; }
+
+    get from() { return this._data.from; }
+    set from(value) { return this._data.from = value; }
+
+    get size() { return this._data.size; }
+    set size(value) { return this._data.size = value; }
+    
+    get filename() { return this._data.filename; }
+    set filename(value) { return this._data.filename = value; }
     
     getViewElement(me = true) {
 
@@ -166,6 +184,11 @@ export class Message extends Model {
                 </div>
             </div>
                 `;
+            div.on('click', e=>{
+
+                window.open(this.content);
+
+            });
             break;
 
             case 'audio':
@@ -289,11 +312,11 @@ export class Message extends Model {
 
         }
 
-        static sendImage(chatId, from, file){
+        static upload(file, from){
 
-            return new Promise ((s, f)=>{
+            return new Promise((s, f)=>{
 
-                let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
+            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
 
             uploadTask.on('state_changed', e=>{
 
@@ -301,19 +324,82 @@ export class Message extends Model {
 
             }, err => {
 
-                console.error(err);
+                f(err);
 
             }, ()=>{
 
-                Message.send(
-                    this._contactActive.chatId, 
-                    this._user.email, 
-                    'image', 
-                    uploadTask.snapshot.downloadURL
-                    ).then(()=>{
+            
+                    s(uploadTask.snapshot);
 
-                        s();
+                });
 
+            });
+                    
+        }
+
+        static sendDocument(charId, from, file, filePreview, info){
+
+            Message.send(charId, from, 'document', '').then(msgRef => {
+
+                    Message.upload(file, from).then(snapshot=>{
+    
+                        let downloadFile = snapshot.downloadURL;
+                        
+                        if (filePreview) {
+
+                        Message.upload(filePreview, from).then(snapshot2=>{
+    
+                            let downloadPreview =snapshot2.downloadURL;
+                    
+                            msgRef.set({
+                                contect: downloadFile,
+                                preview: downloadPreview,
+                                filename: file.name,
+                                size: file.size,
+                                fileType: file.type,
+                                status: 'sent',
+                                info
+                            }, {
+                                merge: true
+                            });
+
+                        });
+        
+                    } else {
+                     
+                        msgRef.set({
+                            contect: downloadFile,
+                            filename: file.name,
+                            size: file.size,
+                            fileType: file.type,
+                            status: 'sent',
+                        }, {
+                            merge: true
+                        });
+
+                    }
+
+                 });
+    
+             });
+
+       }
+
+        static sendImage(chatId, from, file){
+
+            return new Promise ((s, f)=>{
+
+                Message.upload(file, from).then(snapshot=>{
+
+                    Message.send(
+                        this._contactActive.chatId, 
+                        this._user.email, 
+                        'image', 
+                        snapshot.downloadURL
+                        ).then(()=>{
+    
+                            s();
+    
                     });
 
                 });
@@ -334,13 +420,15 @@ export class Message extends Model {
                 from 
             }).then(result=>{
 
-                result.parent.doc(result.id).set({
+                let docRef = result.parent.doc(result.id);
+
+                docRef.set({
                     status:'sent'
                 }, {
                     merge: true
                 }).then(()=>{
 
-                    s();
+                    s(docRef);
 
                 });
 

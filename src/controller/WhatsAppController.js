@@ -6,10 +6,7 @@ import { Firebase } from './../util/FireBase';
 import { User } from '../model/User';
 import { Chat } from './../model/Chat';
 import { Message } from './../model/Message'
-import $export from 'pdfjs-dist';
-
-
-
+import { Base64 } from "../util/Base64";
 
 export class WhatsAppController {
 
@@ -220,7 +217,15 @@ export class WhatsAppController {
 
                                 this.el.panelMessagesContainer.appendChild(view);
 
-                            } else if(me) {
+                            } else {
+
+                                let view = message.getViewElement(me);
+
+                                this.el.panelMessagesContainer.querySelector('#_' + data.id).innerHTML = view.innerHTML;
+
+                            }
+                                 
+                            if (this.el.panelMessagesContainer.querySelector('#_' + data.id) && me) {
 
                                 let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
 
@@ -245,7 +250,6 @@ export class WhatsAppController {
                     });
 
     }
-
 
     loadElements() {
 
@@ -365,7 +369,6 @@ export class WhatsAppController {
             setTimeout(() => {
                 this.el.panelAddContact.addClass('open');
             }, 300);
-
 
         });
 
@@ -589,7 +592,6 @@ export class WhatsAppController {
 
         });
 
-
         this.el.btnAttachDocument.on('click', e => {
 
             this.closeAllMainPanel();
@@ -653,13 +655,12 @@ export class WhatsAppController {
                     
                         this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-generic';
                         break;
-                    
+            
                 } 
 
                 this.el.filenamePanelDocumentPreview.innerHTML = file.name;
                 this.el.imagePanelDocumentPreview.hide();
                 this.el.filePanelDocumentPreview.show();
-
 
             });
 
@@ -676,8 +677,29 @@ export class WhatsAppController {
 
         this.el.btnSendDocument.on('click', e => {
 
-            console.log('send document');
+            let file = this.el.inputDocument.files[0];
+            let base64 = this.el.imgPanelDocumentPreview.src;
 
+            if (file.type === 'application/pdf') {
+
+                Base64.toFile(base64).then(filePreview =>{
+
+                Message.sendDocument(
+                    this._contactActive.chatId,
+                    this._user.email, file, filePreview, this.el.infoPanelDocumentPreview.innerHTML);
+
+                });
+
+            } else {
+
+                Message.sendDocument(
+                    this._contactActive.chatId,
+                    this._user.email, file);
+
+            }
+
+            this.el.btnClosePanelDocumentPreview.click();
+            
         });
 
 
